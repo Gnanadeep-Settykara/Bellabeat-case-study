@@ -1,0 +1,233 @@
+---
+title: "Bellabeat Case Study"
+author: "Gnanadeep Settykara"
+date: "2024-02-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+```
+### **Ask**
+#### **Business Task**
+Bellabeat, a high-tech company focusing on health-centric smart products, wants to leverage smart device usage data to gain insights into consumer behavior. The goal is to understand trends in smart device usage, explore their potential application to Bellabeat customers, and use these insights to inform the company's marketing strategy.
+
+#### **Key Stakeholders**
+* Urška Sršen (Co-founder)
+* Sando Mur (Co-founder)
+* Bellabeat Marketing Department
+
+#### **Objectives**
+* Analyze trends in non-Bellabeat smart device usage.
+* Understand how these trends may relate to Bellabeat's target customers.
+* Formulate high-level recommendations for Bellabeat's marketing strategy based on the smart device usage analysis.
+
+### **Prepare**
+Data Source: <https://www.kaggle.com/datasets/arashnic/fitbit>
+
+Data follows **ROCCC** approach:
+
+* **Reliable**: The data seems reliable as it comes from FitBit users who voluntarily submitted their personal tracker data. FitBit is a well-known brand for fitness tracking, and users typically provide accurate information.
+
+* **Original**: The data source is mentioned as public data collected directly from FitBit users via a survey on Amazon Mechanical Turk. This suggests that the data is original and not a secondary source.
+
+* **Current**: The information doesn't explicitly mention the timeframe of the data, so it's unclear if the data is current. Knowing the date range or the period of data collection would help assess its currency.
+
+* **Comprehensive**: The data appears to cover minute-level output for physical activity, heart rate, and sleep monitoring. This suggests a comprehensive dataset, especially if it includes a diverse set of users.
+
+* **Cited**: The data license is mentioned as CC0: Public Domain.
+
+```{r}
+# Loading packages
+library(tidyverse)
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+Loading and Exploring the data
+``` {r}
+# Importing Datasets
+activity_data <- read.csv("C:/Users/Deep/Desktop/SE/Case study Data Analytics/Dataset/fitbit/Fitabase Data 4.12.16-5.12.16/dailyActivity_merged.csv")
+calories_data <- read.csv("C:/Users/Deep/Desktop/SE/Case study Data Analytics/Dataset/fitbit/Fitabase Data 4.12.16-5.12.16/dailyCalories_merged.csv")
+intensities_data <- read.csv("C:/Users/Deep/Desktop/SE/Case study Data Analytics/Dataset/fitbit/Fitabase Data 4.12.16-5.12.16/dailyIntensities_merged.csv")
+steps_data <- read.csv("C:/Users/Deep/Desktop/SE/Case study Data Analytics/Dataset/fitbit/Fitabase Data 4.12.16-5.12.16/dailySteps_merged.csv")
+sleep_data <- read.csv("C:/Users/Deep/Desktop/SE/Case study Data Analytics/Dataset/fitbit/Fitabase Data 4.12.16-5.12.16/sleepDay_merged.csv")
+weight_data <- read.csv("C:/Users/Deep/Desktop/SE/Case study Data Analytics/Dataset/fitbit/Fitabase Data 4.12.16-5.12.16/weightLogInfo_merged.csv")
+
+# Explore the data
+head(activity_data)
+head(intensities_data)
+head(calories_data)
+head(steps_data)
+head(sleep_data)
+head(weight_data)
+```
+We can observe that there are missing values in the weight data, particularly in the "fat" column.
+
+### **Process**
+
+Data Cleaning
+
+```{r}
+# Converting column names and fixing date formats
+
+# activity
+activity_cleaned <- activity_data %>%
+  rename_with(tolower) %>%
+  mutate(date = as.Date(activitydate, "%m/%d/%y")) # fixing date formats
+
+# intensities
+intensities_cleaned <- intensities_data %>%
+  rename_with(tolower) %>%
+  mutate(date = as.Date(activityday, "%m/%d/%y")) # fixing date formats
+
+# calories
+calories_cleaned <- calories_data %>%
+  rename_with(tolower) %>%
+  rename(activitydate = activityday) %>%
+  mutate(date = as.Date(activitydate, "%m/%d/%y")) # fixing date formats
+
+# steps
+steps_cleaned <- steps_data %>%
+  rename_with(tolower) %>%
+  rename(activitydate = activityday) %>%
+  mutate(date = as.Date(activitydate, "%m/%d/%y")) # fixing date formats
+
+# sleep
+sleep_cleaned <- sleep_data %>%
+  rename_with(tolower) %>%
+  rename(activitydate = sleepday) %>%
+  mutate(date = as.Date(activitydate, "%m/%d/%y")) # fixing date formats
+
+# weight
+weight_cleaned <- weight_data %>%
+  rename_with(tolower) %>%
+  rename(activitydate = date) %>%
+  mutate(date = as.Date(activitydate, "%m/%d/%y")) # fixing date formats
+```
+
+Exploring the data
+
+```{r}
+# Exploring the data
+n_distinct(activity_data$Id)
+n_distinct(intensities_data$Id)
+n_distinct(calories_data$Id)
+n_distinct(steps_data$Id)
+n_distinct(sleep_data$Id)
+n_distinct(weight_data$Id)
+```
+
+From the above information, we can identify that there are only 8 data samples from weight data, which cannot be sufficient to deduce some insights using this data.
+
+### **Analyze**
+
+Let's identify some statistical insights about the data
+
+```{r}
+summary(activity_cleaned)
+summary(intensities_cleaned)
+summary(calories_cleaned)
+summary(steps_cleaned)
+summary(sleep_cleaned)
+summary(weight_cleaned)
+```
+#### **Identified Trends**
+* Activity Summary:
+Average steps: 7638 (below CDC's 10000 recommendation)
+Average sedentary minutes: 991.2 (16.52 hours), suggesting a need for reduction.
+
+* Intensities Summary:
+Average lightly active minutes: 199, indicating predominant light activity.
+
+* Calories Summary:
+Average BMI: 25.19 (overweight; caution without age and gender context)
+
+* Steps Summary:
+Average daily steps: 7638.
+
+* Sleep Summary:
+Average sleep duration: 419.5 minutes.
+Average total time in bed: 458.6 minutes.
+
+* Weight Summary:
+Average BMI: 25.19 (overweight; caution without age and gender context).
+
+### **Share**
+
+Let's assume few hypothesis and create visualizations to validate them.
+
+```{r, warning= FALSE}
+# The total steps taken are positively correlated with calories burned
+ggplot(data = activity_cleaned, mapping = aes(x = totalsteps, y = calories, color = date)) + 
+  geom_point() + geom_smooth() +
+  labs(title = "Total Steps vs. Calories")
+```
+
+There is an actual positive correlation between the total steps and calories burned.
+
+```{r, warning=FALSE}
+# The total sleep duration has a negative correlation with calories burned
+merged1 <- merge(sleep_cleaned, calories_cleaned, by = c('id', 'date'))
+ggplot(data = merged1, mapping = aes(x = totalminutesasleep, y = calories, color = date)) +
+  geom_point() + geom_smooth() +
+  labs(title = "Total Sleep Minutes vs. Calories")
+```
+
+There is neither positive nor negative correlation between the total sleep minutes and calories burned. That means, Sleeping more has no direct effect on buring more calories.
+
+```{r, warning=FALSE}
+# Sedentary minutes have a positive correlation with BMI
+merged3 <- merge(weight_cleaned, activity_cleaned, by = c('id', 'date'))
+ggplot(data = merged3, mapping = aes(y = bmi, x = sedentaryminutes, color = date)) +
+  geom_point() + geom_smooth() +
+  labs(title = "Sedentary Minutes vs. BMI")
+```
+
+There is a positive correlation between the Sedentary Minutes and BMI. It means that people with higher BMI (usually overweight people based on their age/gender) usually have high sedentary minutes. Therefore, it is highly important to reduce the sedentary minutes and maintain good activity.
+
+```{r, warning=FALSE}
+# Total time asleep has a positive correlation with total time in bed
+ggplot(data = sleep_cleaned, mapping = aes(x = totaltimeinbed, y = totalminutesasleep, color = date)) + 
+  geom_point() + geom_smooth() +
+  labs(title = "Total Time Asleep vs. Total Time in Bed")
+```
+
+This suggests that there is a positive correlation between time asleep and total time in bed. That clearly means, the more time people spend in their bed, the more time they are asleep. 
+
+
+```{r, warning=FALSE}
+# The total sedentary minutes have a negative correlation with total calories burned
+merged2 <- merge(intensities_cleaned, calories_cleaned, by = c('id', 'date'))
+ggplot(data = merged2, mapping = aes(x = sedentaryminutes, y = calories, color = date)) +
+  geom_point() + geom_smooth() +
+  labs(title = "Total Sedentary Minutes vs. Calories")
+```
+
+This suggests a negative correlation between the total calories burned vs total sedentary minutes spent. This means that if a person spent more time with no activity, then they burned less calories.
+
+### **Phase**
+
+**Final Conclusion:**
+
+* Propose an overhaul of the app's features based on user preferences and engagement levels.
+* Emphasize the need for addressing insomnia, sedentary behavior, and obesity in users.
+
+**Application of Insights:**
+
+* Implement suggested changes in the Bellabeat app, including feature improvements and additions.
+* Introduce targeted marketing strategies focusing on health improvement and community building.
+
+**Next Steps:**
+
+* Initiate a phased rollout of app updates with enhanced features.
+* Monitor user feedback and engagement post-update for continuous improvement.
+* Evaluate the effectiveness of marketing campaigns through user engagement metrics.
+
+**Additional Data Consideration:**
+
+* Collect user feedback on new features and iterate accordingly.
+* Explore user demographics and preferences to tailor app features more effectively.
