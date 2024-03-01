@@ -5,6 +5,8 @@ date: "2024-02-26"
 output: 
   html_document:
     self_contained: false
+    keep_md: true
+output_dir: docs
 ---
 
 ```{r setup, include=FALSE}

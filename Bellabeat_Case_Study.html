@@ -547,7 +547,8 @@ ggplot(data = activity_cleaned, mapping = aes(x = totalsteps, y = calories, colo
   geom_point() + geom_smooth() +
   labs(title = &quot;Total Steps vs. Calories&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="Bellabeat_Case_Study_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img
+src="Bellabeat_Case_Study_files/figure-html/unnamed-chunk-6-1.png" /><!-- --></p>
 <p>There is an actual positive correlation between the total steps and
 calories burned.</p>
 <pre class="r"><code># The total sleep duration has a negative correlation with calories burned
@@ -556,7 +557,8 @@ ggplot(data = merged1, mapping = aes(x = totalminutesasleep, y = calories, color
   geom_point() + geom_smooth() +
   labs(title = &quot;Total Sleep Minutes vs. Calories&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="Bellabeat_Case_Study_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img
+src="Bellabeat_Case_Study_files/figure-html/unnamed-chunk-7-1.png" /><!-- --></p>
 <p>There is neither positive nor negative correlation between the total
 sleep minutes and calories burned. That means, Sleeping more has no
 direct effect on buring more calories.</p>
@@ -566,7 +568,8 @@ ggplot(data = merged3, mapping = aes(y = bmi, x = sedentaryminutes, color = date
   geom_point() + geom_smooth() +
   labs(title = &quot;Sedentary Minutes vs. BMI&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="Bellabeat_Case_Study_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img
+src="Bellabeat_Case_Study_files/figure-html/unnamed-chunk-8-1.png" /><!-- --></p>
 <p>There is a positive correlation between the Sedentary Minutes and
 BMI. It means that people with higher BMI (usually overweight people
 based on their age/gender) usually have high sedentary minutes.
@@ -577,7 +580,8 @@ ggplot(data = sleep_cleaned, mapping = aes(x = totaltimeinbed, y = totalminutesa
   geom_point() + geom_smooth() +
   labs(title = &quot;Total Time Asleep vs. Total Time in Bed&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="Bellabeat_Case_Study_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img
+src="Bellabeat_Case_Study_files/figure-html/unnamed-chunk-9-1.png" /><!-- --></p>
 <p>This suggests that there is a positive correlation between time
 asleep and total time in bed. That clearly means, the more time people
 spend in their bed, the more time they are asleep.</p>
@@ -587,7 +591,8 @@ ggplot(data = merged2, mapping = aes(x = sedentaryminutes, y = calories, color =
   geom_point() + geom_smooth() +
   labs(title = &quot;Total Sedentary Minutes vs. Calories&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="Bellabeat_Case_Study_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img
+src="Bellabeat_Case_Study_files/figure-html/unnamed-chunk-10-1.png" /><!-- --></p>
 <p>This suggests a negative correlation between the total calories
 burned vs total sedentary minutes spent. This means that if a person
 spent more time with no activity, then they burned less calories.</p>
