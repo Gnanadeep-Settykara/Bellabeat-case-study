@@ -3,10 +3,7 @@ title: "Bellabeat Case Study"
 author: "Gnanadeep Settykara"
 date: "2024-02-26"
 output: 
-  html_document:
-    self_contained: false
-    keep_md: true
-output_dir: docs
+  html_document
 ---
 
 ```{r setup, include=FALSE}
