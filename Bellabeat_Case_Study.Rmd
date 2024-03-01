@@ -2,7 +2,9 @@
 title: "Bellabeat Case Study"
 author: "Gnanadeep Settykara"
 date: "2024-02-26"
-output: html_document
+output: 
+  html_document:
+    self_contained: false
 ---
 
 ```{r setup, include=FALSE}
